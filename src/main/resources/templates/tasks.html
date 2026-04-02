@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>タスク一覧</title>
+</head>
+<body>
+    <h1>タスク一覧表示</h1>
+    <ul>
+        <li th:each="task : ${tasks}">
+            [[${task.id}]] 
+            <span th:unless = "${task.completed}">[[${task.title}]]</span>
+            <del th:if = "${task.completed}">[[${task.title}]]</del>
+            <span th:if = "${task.completed}">✔</span>
+            <!-- <del th:if = "${task.completed}">${task.title}</del> -->
+            <input type = "checkbox" th:checked = "${task.completed}">
+            <form action = "/tasks/delete" method = "post" style = "display: inline-block">
+                <input type = "hidden" name = "id" th:value = ${task.id}>
+                <button>削除</button>
+            </form>
+                    
+            <form action = "/tasks/complete" method = "post" style = "display: inline-block">
+                <input type = "hidden" name = "id" th:value = ${task.id}>
+                <button>完了</button>
+            </form>
+        </li>
+    </ul>
+
+    <h2>追加するタスクを入力してください</h2>
+    <form action = "/tasks/add" method = "post">
+        <input type = "text" name = "title">
+        <button>送信</button>
+    </form>
+</body>
+</html>
