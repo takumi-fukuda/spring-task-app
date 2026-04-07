@@ -1,5 +1,6 @@
 package com.example.demo.dao;
 
+import com.example.demo.DemoApplication;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,18 +15,20 @@ import com.example.demo.entity.Task;
 
 @Repository
 public class TaskDao {
+    private final DemoApplication demoApplication;
     Connection conn;
 
-    public TaskDao() {
+    public TaskDao(DemoApplication demoApplication) {
         try {
             conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/taskapp",
-                "user",
-                "password"
+                "root",
+                "root1234root"
             );
         } catch(Exception e) {
             e.printStackTrace();
         }
+        this.demoApplication = demoApplication;
     }
 
     public List<Task> getAllTasks() {
@@ -83,6 +86,44 @@ public class TaskDao {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Task getTaskById(int id) {
+        Task task = new Task();
+        task.setId(id);
+        String sql = "SELECT title FROM tasks WHERE id = ?";
+        try (
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+        ) {
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                task.setTitle(rs.getString("title"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return task;
+    }
+
+    // public Task setTask(int id, String title) {
+    //     Task task = new Task();
+    //     task.setId(id);
+    //     task.setTitle(title);
+    //     return task;
+    // }
+
+    public void editTask(int id, String title) {
+        String sql = "UPDATE tasks SET title = ? WHERE id = ?";
+        try (
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+        ) {
+            pstmt.setString(1, title);
+            pstmt.setInt(2, id);
+            pstmt.executeUpdate();
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }

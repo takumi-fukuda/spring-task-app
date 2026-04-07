@@ -43,4 +43,17 @@ public class TaskController {
         taskDao.completeTask(id);
         return "redirect:/tasks";
     }
+
+    @GetMapping("/tasks/edit")
+    public String editTask(@RequestParam int id, Model model) {
+        Task task = taskDao.getTaskById(id);
+        model.addAttribute("task", task);
+        return "edit";
+    }
+
+    @PostMapping("/tasks/update")
+    public String updateTask(@RequestParam int id, @RequestParam String title) {
+        taskDao.editTask(id, title);
+        return "redirect:/tasks";
+    }
 }
