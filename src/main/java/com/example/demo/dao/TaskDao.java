@@ -108,13 +108,6 @@ public class TaskDao {
         return task;
     }
 
-    // public Task setTask(int id, String title) {
-    //     Task task = new Task();
-    //     task.setId(id);
-    //     task.setTitle(title);
-    //     return task;
-    // }
-
     public void editTask(int id, String title) {
         String sql = "UPDATE tasks SET title = ? WHERE id = ?";
         try (

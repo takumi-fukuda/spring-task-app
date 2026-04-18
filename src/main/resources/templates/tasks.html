@@ -10,8 +10,8 @@
         <li th:each="task : ${tasks}">
             [[${task.id}]] 
             <span th:unless = "${task.completed}">[[${task.title}]]</span>
-            <del th:if = "${task.completed}">[[${task.title}]]</del>
-            <span th:if = "${task.completed}">✔</span>
+            <del th:if = ${task.completed}>[[${task.title}]]</del>
+            <span th:if = ${task.completed}>✔</span>
             <input type = "checkbox" th:checked = "${task.completed}">
 
             <form action = "/tasks/delete" method = "post" style = "display: inline-block">
@@ -26,7 +26,6 @@
 
             <form action = "/tasks/edit" method = "get" style = "display: inline-block">
                 <input type = "hidden" name = "id" th:value = ${task.id}>
-                <!-- <input type = "hidden" name = "title" th:value = ${task.title}> -->
                 <button>編集</button>
             </form>
         </li>
@@ -37,5 +36,6 @@
         <input type = "text" name = "title">
         <button>送信</button>
     </form>
+    <span th:if = "${error}">[[${error}]]</span>
 </body>
 </html>

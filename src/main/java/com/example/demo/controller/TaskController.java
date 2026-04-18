@@ -1,12 +1,18 @@
 package com.example.demo.controller;
 
+import org.springframework.boot.web.server.autoconfigure.ServerProperties.Reactive.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.entity.Task;
+import com.example.demo.entity.User;
+
+import jakarta.servlet.http.HttpSession;
+
 import com.example.demo.dao.TaskDao;
+import com.example.demo.dao.UserDao;
 
 import org.springframework.ui.Model;
 import java.util.List;
@@ -14,20 +20,33 @@ import java.util.List;
 @Controller
 public class TaskController {
     private TaskDao taskDao;
+    private UserDao userDao;
 
-    public TaskController(TaskDao taskDao) {
+    public TaskController(TaskDao taskDao, UserDao userDao) {
         this.taskDao = taskDao;
+        this.userDao = userDao;
     }
 
     @GetMapping("/tasks")
-    public String showTask(Model model) {
-        List<Task> tasks = taskDao.getAllTasks();
-        model.addAttribute("tasks", tasks);
-        return "tasks";
+    public String showTask(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("loginUser");
+        if(user != null) {
+            List<Task> tasks = taskDao.getAllTasks();
+            model.addAttribute("tasks", tasks);
+            return "tasks";
+        } else {
+            return "redirect:/login";
+        }
     }
 
     @PostMapping("/tasks/add")
-    public String addTask(@RequestParam String title) {
+    public String addTask(@RequestParam String title, Model model) {
+        if(title.isEmpty()) {
+            model.addAttribute("error", "タイトルを入力してください");
+            List<Task> tasks = taskDao.getAllTasks();
+            model.addAttribute("tasks", tasks);
+            return "tasks";
+        }
         taskDao.addTask(title);
         return "redirect:/tasks";
     }
@@ -55,5 +74,22 @@ public class TaskController {
     public String updateTask(@RequestParam int id, @RequestParam String title) {
         taskDao.editTask(id, title);
         return "redirect:/tasks";
+    }
+
+    @GetMapping("/login")
+    public String showLogin() {
+        return "login";
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestParam String username, @RequestParam String password, Model model, HttpSession session) {
+        User user = userDao.findByUsername(username);
+        if(user != null && user.getPassword().equals(password)) {
+            session.setAttribute("loginUser", user);
+            return "redirect:/tasks";
+        } else {
+            model.addAttribute("error", "ログイン失敗");
+            return "login";
+        }
     }
 }
