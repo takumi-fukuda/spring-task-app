@@ -22,30 +22,30 @@ Spring BootとMySQLを使用して作成したタスク管理アプリです
 ## 使い方
 1. ログイン
 以下のユーザーでログインできます
-・username: takasi / password: 1234
-・username: hirosi / password: 5678
+- username: takasi / password: 1234
+- username: hirosi / password: 5678
 
 2. タスク操作
-・タスクを入力して追加
-・完了ボタンでタスク完了
-・削除ボタンで削除
-・編集ボタンで内容変更
+- タスクを入力して追加
+- 完了ボタンでタスク完了
+- 削除ボタンで削除
+- 編集ボタンで内容変更
 
 ## データベース構成
 usersテーブル
-・id
-・username
-・password
+- id
+- username
+- password
 
 tasksテーブル
-・id
-・title
-・completed
-・user_id
+- id
+- title
+- completed
+- user_id
 
 ## 工夫した点
-・セッションを使ったログイン管理
-・ユーザーごとのタスクを分離
+- セッションを使ったログイン管理
+- ユーザーごとのタスクを分離
 
 ## 今後の改善予定
 - ログアウト機能の追加
