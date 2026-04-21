@@ -12,6 +12,7 @@
         <p>パスワード</p>
         <input type = "password" name = "password">
         <button>送信</button>
+        <p th:if = ${error}>[[${error}]]</p>
     </form>
 </body>
 </html>

@@ -31,7 +31,8 @@ public class TaskController {
     public String showTask(Model model, HttpSession session) {
         User user = (User) session.getAttribute("loginUser");
         if(user != null) {
-            List<Task> tasks = taskDao.getAllTasks();
+            int userId = user.getId();
+            List<Task> tasks = taskDao.getTasksByUserId(userId);
             model.addAttribute("tasks", tasks);
             return "tasks";
         } else {
@@ -40,14 +41,15 @@ public class TaskController {
     }
 
     @PostMapping("/tasks/add")
-    public String addTask(@RequestParam String title, Model model) {
+    public String addTask(@RequestParam String title, Model model, HttpSession session) {
+        User user = (User) session.getAttribute("loginUser");
         if(title.isEmpty()) {
             model.addAttribute("error", "タイトルを入力してください");
-            List<Task> tasks = taskDao.getAllTasks();
+            List<Task> tasks = taskDao.getTasksByUserId(user.getId());
             model.addAttribute("tasks", tasks);
             return "tasks";
         }
-        taskDao.addTask(title);
+        taskDao.addTask(title, user.getId());
         return "redirect:/tasks";
     }
 

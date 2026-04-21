@@ -54,12 +54,13 @@ public class TaskDao {
         return list;
     }
 
-    public void addTask(String title) {
-        String sql = "INSERT INTO tasks(title, completed) VALUES(?, false)";
+    public void addTask(String title, int userId) {
+        String sql = "INSERT INTO tasks(title, completed, user_id) VALUES(?, false, ?)";
         try (
             PreparedStatement pstmt = conn.prepareStatement(sql);
         ) {
             pstmt.setString(1, title);
+            pstmt.setInt(2, userId);
             pstmt.executeUpdate();
         } catch(Exception e) {
             e.printStackTrace();
@@ -119,5 +120,26 @@ public class TaskDao {
         } catch(Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Task> getTasksByUserId(int user_id) {
+        List<Task> list = new ArrayList<>();
+        String sql = "SELECT * FROM tasks WHERE user_id = ?";
+        try(
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+        ) {
+            pstmt.setInt(1, user_id);
+            ResultSet rs = pstmt.executeQuery();
+            while(rs.next()) {
+                Task task = new Task();
+                task.setId(rs.getInt("id"));
+                task.setTitle(rs.getString("title"));
+                task.setCompleted(rs.getBoolean("completed"));
+                list.add(task);
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }
