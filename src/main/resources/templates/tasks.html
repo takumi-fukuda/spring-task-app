@@ -37,5 +37,11 @@
         <button>送信</button>
     </form>
     <span th:if = "${error}">[[${error}]]</span>
+
+    <p>
+        <form action = "/logout" method = "post">
+            <button>ログアウト</button>
+        </form>
+    </p>
 </body>
 </html>
